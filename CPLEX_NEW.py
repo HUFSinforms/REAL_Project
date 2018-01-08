@@ -124,10 +124,10 @@ class portfolio():
 
     def solves(self):
         self.c.parameters.threads.set(1)
-        #self.c.set_log_stream(None)
-        #self.c.set_error_stream(None)
-        #self.c.set_warning_stream(None)
-        #self.c.set_results_stream(None)
+        self.c.set_log_stream(None)
+        self.c.set_error_stream(None)
+        self.c.set_warning_stream(None)
+        self.c.set_results_stream(None)
         self.c.solve()
 
         abcd = []

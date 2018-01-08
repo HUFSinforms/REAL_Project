@@ -109,8 +109,6 @@ class informs:
         self.cplexs.set_upsum(big_w_dic=w_up_dic, w_upsums=0)
         
         list_result = self.cplexs.solves()
-        
-        print(list_result[0])
 
         w_dic = list_result[0]
         d_dic = list_result[1]
@@ -134,11 +132,6 @@ class informs:
             mat_2[k] = np.array([d_dic[i]])
             k += 1
 
-        print(mat_1)
-        # print(mat_2)
-
-        # mins_list.append(1-sum_min)
-
         a = np.dot(mat_1, self.risk_mat)
 
         b = np.dot(a, mat_2)
@@ -148,8 +141,8 @@ class informs:
 
         TE = b
 
-        print(TE)
-        print(0.0025*self.omegamulti)
+        
+        print('TE : ',TE)
         
         
         w_upsum = 0
