@@ -7,6 +7,7 @@ import CPLEX_NEW as cn
 
 class informs:
     def __init__(self,omega_multi):
+        #self.ver=3
         f0 = open('pic/dic_sector.txt', 'rb')
         f1 = open('pic/dic_bench.txt', 'rb')
         f2 = open('pic/risk_sedol.txt', 'rb')
@@ -108,6 +109,8 @@ class informs:
         self.cplexs.set_upsum(big_w_dic=w_up_dic, w_upsums=0)
         
         list_result = self.cplexs.solves()
+        
+        print(list_result[0])
 
         w_dic = list_result[0]
         d_dic = list_result[1]
@@ -126,23 +129,29 @@ class informs:
 
         k = 0
 
-        for i in d_dic.keys():
+        for i in self.risk_sedol:
             mat_1 = np.append(mat_1, d_dic[i])
             mat_2[k] = np.array([d_dic[i]])
             k += 1
 
-        # print(mat_1)
+        print(mat_1)
         # print(mat_2)
 
         # mins_list.append(1-sum_min)
 
         a = np.dot(mat_1, self.risk_mat)
+
         b = np.dot(a, mat_2)
+        
 
         mins_list2.append(b)
 
         TE = b
 
+        print(TE)
+        print(0.0025*self.omegamulti)
+        
+        
         w_upsum = 0
 
         for i in w_dic.keys():
@@ -193,7 +202,7 @@ class informs:
 
             k = 0
 
-            for i in d_dic.keys():
+            for i in self.risk_sedol:
                 mat_1 = np.append(mat_1, d_dic[i])
                 mat_2[k] = np.array([d_dic[i]])
                 k += 1
