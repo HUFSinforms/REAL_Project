@@ -114,10 +114,8 @@ class portfolio():
 
 
     def quard_obj(self,qmat):
-        
-        
+       
         self.c.objective.set_quadratic(qmat)
-
         self.c.objective.set_sense(self.c.objective.sense.minimize)
 
 
