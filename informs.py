@@ -63,7 +63,7 @@ def portfolio(sector,bench,asset,MCAPQ,beta,alpha,qmat,Q_con,multiple,time_init)
 
     c.linear_constraints.add(
         lin_expr=[cplex.SparsePair(ind=["q" + str(i) for i in asset], val=[1.0]*len(asset))], senses=["G"],
-        rhs=[50], names=["st_9_1"])
+        rhs=[60], names=["st_9_1"])
 
 
     c.linear_constraints.add(
@@ -80,16 +80,53 @@ def portfolio(sector,bench,asset,MCAPQ,beta,alpha,qmat,Q_con,multiple,time_init)
     c.parameters.timelimit.set(time_init)
 
     c.solve()
-    abcd=[]
-    ab={}
-    cd={}
+    total0=[]
+    total1=[]
+    total2=[]
+    total3=[]
+    w_dics0={}
+    d_dics0={}
+    w_dics1={}
+    d_dics1={}
+    w_dics2={}
+    d_dics2={}
+    w_dics3={}
+    d_dics3={}
+    
+    
 
     numa = 0
+    print(c.solution.get_status())
+    
+    pool_list = []
+    
     for i in asset:
-        ab.update({str(i):bench[i] + c.solution.get_values("d" + str(i))})
-        cd.update({str(i):c.solution.get_values("d" + str(i))})
+        w_dics0.update({str(i):bench[i] + c.solution.pool.get_values(0, "d" + str(i))})
+        d_dics0.update({str(i):c.solution.pool.get_values(0, "d" + str(i))})
+        w_dics1.update({str(i):bench[i] + c.solution.pool.get_values(1, "d" + str(i))})
+        d_dics1.update({str(i):c.solution.pool.get_values(1, "d" + str(i))})
+        w_dics2.update({str(i):bench[i] + c.solution.pool.get_values(2, "d" + str(i))})
+        d_dics2.update({str(i):c.solution.pool.get_values(2, "d" + str(i))})
+        w_dics3.update({str(i):bench[i] + c.solution.pool.get_values(3, "d" + str(i))})
+        d_dics3.update({str(i):c.solution.pool.get_values(3, "d" + str(i))})
+        
         numa += 1
-    abcd.append(ab)
-    abcd.append(cd)
-    abcd.append(c.solution.get_objective_value())
-    return abcd
+    total0.append(w_dics0)
+    total0.append(d_dics0)
+    total0.append(c.solution.pool.get_objective_value(0))
+    total1.append(w_dics1)
+    total1.append(d_dics1)
+    total1.append(c.solution.pool.get_objective_value(1))
+    total2.append(w_dics2)
+    total2.append(d_dics2)
+    total2.append(c.solution.pool.get_objective_value(2))
+    total3.append(w_dics3)
+    total3.append(d_dics3)
+    total3.append(c.solution.pool.get_objective_value(3))
+    
+    pool_list.append(total0)
+    pool_list.append(total1)
+    pool_list.append(total2)
+    pool_list.append(total3)
+    
+    return pool_list

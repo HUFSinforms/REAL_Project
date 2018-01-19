@@ -15,6 +15,11 @@ class portfolio():
         self.asset = asset
         self.alpha = alpha
         self.bench = bench
+        self.w_pre = w_pre
+        self.O_scale = O_scale
+        
+        
+        self.c.objective.set_sense(self.c.objective.sense.minimize)
 
         self.c.variables.add(names=["d" + str(i) for i in asset], obj=alpha, lb=[-1 * bench[j] for j in asset])
         
@@ -24,7 +29,11 @@ class portfolio():
         
         
         
-        self.c.variables.add(names=["O"], obj=[O_scale], lb=[-99999])
+        self.c.variables.add(names=["O"], obj=[O_scale*0.0001], lb=[-99999])
+        
+        
+        self.c.variables.add(names=["dx" + str(i) for i in w_pre.keys()], lb=[0 for j in w_pre.keys()],ub=[50000 for j in w_pre.keys()])
+        
         
 
         # print(c.variables.get_lower_bounds())
@@ -39,6 +48,10 @@ class portfolio():
         # c.linear_constraints.add(
         #     lin_expr=[cplex.SparsePair(ind=["assum"], val=[1.0])], senses=["E"],
         #     rhs=[returns], names=["sum"])
+        
+        O_rhs = 0
+        
+
 
         for i in asset:
             self.c.linear_constraints.add(lin_expr=[cplex.SparsePair(ind=["d" + str(i)], val=[1.0])], senses=["G"],
@@ -49,9 +62,41 @@ class portfolio():
             self.c.linear_constraints.add(lin_expr=[cplex.SparsePair(ind=["d" + str(i)], val=[1.0])], senses=["G"],
                                           rhs=[-0.05], names=["st_5_2"])
             
-           
+            if i not in w_pre.keys():
+                O_rhs = O_rhs - bench[i]
+                
+                
+        self.c.linear_constraints.add(lin_expr = [cplex.SparsePair(ind = ["dx"+str(i) for i in w_pre.keys()], val = [1.0]*len(w_pre.keys()))],senses=["E"],rhs=[O_rhs],names=["TurnOver"])
+        
+        self.c.linear_constraints.set_linear_components("TurnOver", [["O"], [-1.0]])       
+        
+        for i in asset:
+            if i not in w_pre.keys():
+                self.c.linear_constraints.set_linear_components("TurnOver", [["d"+ str(i)], [1.0]])
+            
+            
+        for i in w_pre.keys():
+            if i in asset:
+                self.c.linear_constraints.add(lin_expr=[cplex.SparsePair(ind=["dx" + str(i)], val=[1.0])], senses=["G"],
+                                              rhs=[1*((-1 * bench[i])+w_pre[i])], names=[str(i) + "dx"])
 
-        #
+                self.c.linear_constraints.set_linear_components(str(i) + "dx", [["d"+ str(i)], [1.0]])
+
+                self.c.linear_constraints.add(lin_expr=[cplex.SparsePair(ind=["dx" + str(i)], val=[1.0])], senses=["G"],
+                                              rhs=[1*(bench[i]-w_pre[i])], names=[str(i) + "dx2"])
+
+                self.c.linear_constraints.set_linear_components(str(i) + "dx2", [["d"+ str(i)], [-1.0]])
+                
+            else:
+                
+                self.c.linear_constraints.add(lin_expr=[cplex.SparsePair(ind=["dx" + str(i)], val=[1.0])], senses=["G"],
+                                              rhs=[1*w_pre[i]], names=[str(i) + "dx"])
+                
+                
+                self.c.linear_constraints.add(lin_expr=[cplex.SparsePair(ind=["dx" + str(i)], val=[1.0])], senses=["G"],
+                                              rhs=[-1*w_pre[i]], names=[str(i) + "dx2"])
+
+        
         # bench_sum = 0
         #
         # for i in bench:
@@ -62,9 +107,7 @@ class portfolio():
         self.c.linear_constraints.add(lin_expr = [cplex.SparsePair(ind = ["d"+str(i) for i in asset], val = [1.0]*len(asset))],senses=["E"],rhs=[0],names=["st_4"])
         
         
-        self.c.linear_constraints.add(lin_expr = [cplex.SparsePair(ind = ["d"+str(i) for i in asset], val = [-1.0]*len(asset))],senses=["E"],rhs=[1-w_pre],names=["TurnOver"])
         
-        self.c.linear_constraints.set_linear_components("TurnOver", [["O"], [1.0]])
 
         for j in sector:
             self.c.linear_constraints.add(
@@ -192,7 +235,7 @@ class portfolio():
         
         self.c.objective.set_quadratic(qmat)
 
-        self.c.objective.set_sense(self.c.objective.sense.minimize)
+        
 
 
 
@@ -202,17 +245,29 @@ class portfolio():
         self.c.set_error_stream(None)
         self.c.set_warning_stream(None)
         self.c.set_results_stream(None)
+        #self.c.write('TO.lp')
+        
+
         self.c.solve()
+        
+        
+        
+        
+        #print("optimal")
+        
+        #print(self.c.solution.get_status())
+
 
         abcd = []
         ab = {}
         cd = {}
         ef={}
+        
 
         numa = 0
         for i in self.asset:
 
-            # print("d" + str(i)  + " : " + str(c.solution.get_values("d" + str(i))))
+           # print("d" + str(i)  + " : " + str(self.c.solution.get_values("d" + str(i))))
             # if self.bench[i] + self.c.solution.get_values("d" + str(i)) > 0:
             # print("w" + str(i)  + " : " + str(bench[i] + self.c.solution.get_values("d" + str(i))))
             # print(numa)
@@ -230,5 +285,18 @@ class portfolio():
         abcd.append(cd)
         abcd.append(self.c.solution.get_objective_value())
         abcd.append(ef)
+        abcd.append(self.c.solution.get_status())
+        #print("O"  + " : " + str(self.c.solution.get_values("O")))
+        #print(self.c.solution.get_objective_value())
 
+        #for j in self.w_pre.keys():
+            #print("dx"+ str(j)  + " : " + str(0.0001*self.c.solution.get_values("dx"+ str(j))))
+           # if j in self.asset:
+               # print("dx"+ str(j)  + " 제약식 우변1 : " + str(self.bench[j]+self.c.solution.get_values("d"+ str(j))-self.w_pre[j]))
+                #print("dx"+ str(j)  + " 제약식 우변2 : " + str(self.w_pre[j]-self.bench[j]-self.c.solution.get_values("d"+ str(j))))
+        #if self.O_scale > 0:
+           # if self.c.solution.get_values("O") > 10:
+                
+              #  print("멈춰!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+               # return 1234
         return abcd

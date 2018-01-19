@@ -3,11 +3,13 @@
 \usepackage{latexsym}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{amssymb}
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
-
-
+\usepackage{pgfplots}
+\pgfplotsset{width=7cm,compat=1.8}
 \parindent0pt
+\usepgfplotslibrary{statistics}
 \parskip\bigskipamount
 
 \begin{document}
@@ -75,8 +77,8 @@
 \textbf{Methodology Approach {\&} Model Building}\\*
 \begin{itemize}
 
-\item[1.] Global Approach
-	\item[] \underline{Formulation Approach }:
+\item[\textbf{1.}] \textbf{Formulation Approach}
+	\item[] \underline{\textbf{Model Building}}:
 	% CPLEX를 가지고 QCQP 풀었을 경우 (1) Linearlize (2) Handling non-convex constraints -> Bisearch Approach (3)간단한 실험 (4)실험결과 분석 (문제를 어렵게 만드는 제약조건 , cardinality 제약식)
 	Before buiding the model, we tried to solve the  Quadratic Constraint Quadratic Programming (QCQP)  problem by using the IBM CPLEX, which is well known Optmization tool, to determine the difficulty of the problem. Since CPLEX can not deal with non-linear constraints,the given formulation is required to be reformulated. 
 	First, the constraints (9) are reformulated as follows:
@@ -87,49 +89,150 @@
 	& 50 \leq \sum_{i \in N} y_i \leq 70 \\
 	& y_i \in \{0,1\}, \quad \forall i \in N 
 	\end{align*}
-	The decision variables $y_i$ is 1 if asset $i \in N$ is selected where $w_i$ is bigger than 0. Because $w_i \leq 0.001$ is considered to $w_i = 0$,  $y_i = 0$ if $w_i = 0$. The opposite is the same as well. Constraints (10) and (11) are also non-linear. Furthermore, if non-convex constraints are linearized, they significantly impact speed by increasing the number of variables to determine and the number of constraints to consider. In other words, it is very inefficient to reformulate Constraints (10) and (11), which represent the limits of Active Share and Tracking Error, respectively. Therefore, we propose a bisearch algorithm to adjust Active share and Tracking Error.
+	The decision variables $y_i$ is 1 if asset $i \in N$ is selected where $w_i$ is bigger than 0. Because $w_i \leq 0.001$ is considered to $w_i = 0$,  $y_i = 0$ if $w_i = 0$. The opposite is the same as well. Constraints (10) and (11) are also non-linear. However, if non-convex constraints are linearized, they significantly impact speed by increasing the number of variables to determine and the number of constraints to consider. In other words, it is very inefficient to reformulate constraints (10) and (11), which represent the limits of Active Share and Tracking Error, respectively. Therefore, after solving the problem without reflecting constraints (10) and (11), we tried to identify the following observations.
+	\begin{itemize}
+		\item[] \textbf{Observation1.} In most cases, the range of Active Share is satisfied.
+		\item[] \textbf{Observation2.} Tracking Error is less than lower bound (0.05).
+		%\item[] \textbf{Observation3.} The portfolio weights($w$) tend to be less than the benchmark weights($w_{\text{bench}}$).
+	\end{itemize}
+	According to observation2, Tracking Error should be raised. At this time, $d^T\Omega d$ can be expressed as $\quad w^T\Omega  w - w_{\text{bench}}^T\Omega  w_{\text{bench}} \quad$, which means that the difference between the benchmark weight and the portfolio weight is too small that TE does not satisfy the lower bound.In other words, the difference between the two weights must be increased to some extent to satisfy the constraints. Since the following $  w_{\text{bench}}^T\Omega  w_{\text{bench}}  $ is fixed, it is required to satisfy the constraints by changing $w^T\Omega  w $. 
+	Because the weight value of all of the unselected assets from approximately 500 candidates is zero, the weight value is equal to or less than the benchmark weight value. On the other hand, the weight value of the 50 to 70 selected assets may be larger or smaller than the benchmark weights. If the portfolio weight is further increased in the case of the portfolio weight is bigger than benchmark weight, the difference between the two weights will be positively increased. In the opposite case, portfolio weight is less than benchmark weight, the difference between to two weights(Active Weight) will be negatively increased by reducing portfolio weight.
+	\item[] \underline{\textbf{Bisectional Algorithm}}:
+	 We applied the idea to the bisectional search algorithm.  The bisectional search algorithm is an iterative algorithm that narrows the range and finds a feasible solution. When narrowing the range, if the feasible solution exists in the range, search in the right range based on the median of the range, and search in the left range if the feasible solution does not exist.
 	
-	%bisearch algorithm 내용
+	An example is shown in \ref{fig:bisection}. Let  $ \sum_{p\in P} w_p = 0.6$, where $P$ is a set of assets whose $d$ is greater than zero. First, the solution is searched by dividing the interval between 0.6 and 1.0. If the solution is a feasible solution that satisfies both the range of Active Share and Tracking Error, narrow the range and search again in the left section.  The search is stopped when the width of the range($\underline{Z} \sim \overline{Z}$) is less than the end condition which is set to 0.001. 
 	
-	\item[]\underline{Evolutionary Approach} :
+	\begin{figure}[h] 
+		\begin{center}
+			\includegraphics[width=0.75\textwidth]{bisection}
+			\caption{An Example of Bisectional Search} \label{fig:bisection}
+		\end{center}
+	\end{figure}
+
+	%$\sum_{p \in P} w_i = (\underline{Z} +\overline{Z})/2 $
+	% bisectional algorithm 결론
+	
+	%\item[]\underline{Evolutionary Approach} : 
 	
 	% 진화 알고리즘 (ex.EDA)으로 접근. (간단한 실험?) -> 문제점 도출 : population의 수를 크게 두고 여러번 풀어 확률적 이론 등을 적용시키는 데에는 오랜시간 소요.
-	
-	\item[]\underline{Neural Network Approach} :
-	
-	% DeepLearning 기법을 이용함 -> 세밀한 수치을 조정하기 위해서는 training 시간이 오래걸릴 뿐만 아니라 모든 제약식에 대해 feasible한 set을 찾기에는 무리가 있음. 
-	
-	
-\item[2.] Hybrid Approach %이름
+		
+	\item[\textbf{2.}] \textbf{Neural Network Approach}
 
-When solving the problem with the formulation appraoch, we could not find a reasonable solution because to consider about 500 assets per iteration the number of decision variables to decide and the number of constraints to be satisfied are too high . Especially, constraints (9) which select cardinalities considering the target range on number of stocks make the problem difficult. 
-% 진화알고리즘의 단점 추가
-In the case of Neural Network Approach, there is a great advantage in that a solution that does not get significantly out from the whole constraints and that has a good objective value can be considered at the same time. However, it is difficult to find a soluton satisfying the feasibility for all the constraints and the fact that the training time takes too much time.
+	\item[]\underline{\textbf{The application of GAN}} : \textbf{Generative adversarial networks (GANs)} are well known deep neural net(NN) architectures comprised of two networks. One neural network, called the  \textbf{Generator(G)}, generates new data instances, while the other, the  \textbf{Discriminator(D)}, decides whether each instance of data is real dataset or not. Both neural networks learn to alternate with each other. The G trains to generate data similar to real data, and the D trains to distinguish real data from fake data generated by G. 
+
+		\begin{figure}[h] 
+		\begin{center}
+			\includegraphics[width=0.6\textwidth]{GAN_basic}
+			\caption{The strucutre of basic GAN} \label{fig:GAN-basic}
+		\end{center}
+	\end{figure}
+
+See \ref{fig:GAN-basic}. G generates fake data when arbitrary noise z is given as a input through a NN composed of layers which are a input layer, multiple hidden layers and a output layer. G tries to make $D(x) = 1$ for sample x extracted from fake data, and D tries to make $D(G (z)) = 0$ for sample $G (z)$ , where $z \sim p_{z}(z)$. Therefore, the loss function $V(D,G)$ of GAN can be expressed as follows : %reference?
+ \begin{align*}
+ \min_G \max_D V(D,G)  = \mathbb{E}_{x~p_{data}(x)}[\log D(x)]  + \mathbb{E}_{x~p_{x}(x)}[\log(1-D(G(z)))] 
+ \end{align*}
+ We use the GAN 's basic idea of learning networks with adversarial relationships between two networks to solve the problem of portfolio optimization. G determines the decision variable $w$ of the formulation, and D determines if the data generated from G is feasible. D is based on the formulation, and the sample data $G(z)$ generated in G checks both the feasibility of the solution and the quality of objective value. Therefore, the value of loss in D is the sum of the degree of violation from the constraints and objective value. G is a deep NN structure consisting of one input layer, three hidden layers and one ouput layer. G tries to minimize the loss of D for the sample $G(z)$ generated from the random input noise $z \sim \mathcal {U}(-1,1)$. That is, the decision variable $ w $ generated in G is trained to be feasible for all constraints and the objective value to be minimized. Unlike the basic GAN structure, GAN for portfolio optimization has G for NN structure, but D is not, and only G is required to train. The loss function $V(G)$ of GAN can be expressed as follows :
+ \begin{align*}
+ \min_G \mathbb{E}_{x~p_{data}(x)}[\log(D(G(z)))] 
+ \end{align*}
+%내용 추가 및 간단한 실험
 
 \begin{figure}[h] 
 	\begin{center}
-		\includegraphics[width=0.45\textwidth]{flowchart}
-		\caption{A flowchart of ...} \label{fig:flowchart}
+		\includegraphics[width=0.6\textwidth]{GAN_port}
+		\caption{The strucutre of GAN for portfolio optimization} \label{fig:GAN-port}
 	\end{center}
+
 \end{figure}
 	
-	- 제시하는 모델의 전체적인 구조 제시 (Flow Chart)
-	1) initial cardinality set 지정 : 
-	- optimal solution을 도출하는 최적화 기법인 B&B algorithm을 이용했을때, tab1과 같이 cardinality 선택에서 어려움이 있으므로 이를 해소시키기 위한 방도. 
-	- objective value(Return 대비 Risk) 가 낮아지는 좋은 cardinality set 을 찾아보자!
-	- 3가지 방법(Random, Cplex, GAN)을 제시
-	- 각 방법의 원리 설명
-	
-	
-	2) 1)로부터 얻어진 cardinality set을 Cplex 수리모형에 적용 
-	- 실험 결과 및 정리 (Tab2)
-	
-	3) 초기 해 개선 알고리즘
-	
-	4) Turnover 계산 후 다음 기간(date)에 반영
-	
-	
-	- Robustness고려
+\item[\textbf{3.}] \textbf{GAN-MP Hybrid Approach} %이름 
+	\item[] We propose a new \textbf{GAN(Generative adversarial networks)-MP(Mathmatical Programming) Hybrid approach} that complements the disadvantages of formluation approach and neural network approach and enhances their advantages.Several limitations could be derived from the three approaches we present above. When solving the problem with the formulation appraoch, we could not find a reasonable solution because to consider about 500 assets per iteration the number of decision variables to decide and the number of constraints to be satisfied are too high . Especially, constraints (9) which select cardinalities considering the target range on number of stocks make the problem difficult. 
+	In the case of Neural Network Approach, there is a great advantage in that a solution that does not get significantly out from the whole constraints and that has a good objective value can be considered at the same time. However, it is difficult to find a soluton satisfying the feasibility for all the constraints and the fact that the training time takes too much time. The GAN-MP hybrid approach is a highly efficient approach that maximizes the advantages of GAN and formulation-based optimizations. This appraoch consists of three steps as shown in Figure 4. Step1 is the process of finding the cardinality set which is the combination of the selected assets. The cardinality set selected in Step1 solves the QCQP problem with the selected assets fixed and finds the local optimal solution. According to the result of Step2, the update algorithm finds cardinality set that can reduce the objective value and improves the solution.
+	\begin{figure}[h] 
+		\begin{center}
+			\includegraphics[width=0.45\textwidth]{flowchart}
+			\caption{A Flowchart of Hybrid Approach} \label{fig:flowchart}
+		\end{center}
+	\end{figure}
+
+	\item[]\underline{\textbf{Step1. Initial Cardinality Set}}  :
+	 When the number of assets to be considered is large, the problem becomes large as the number of constraints increases as well as decision variables. Thus, step1 filters out good assets that are crucial for minimizing the objective value. The combination of assets is chosen to minimize the risk and maximize return. In order to do this, the whole assets are required to consider. We propose a formulation approach that finds the solution through Mixed Integer Programming (MIP) and a neural network-based GAN as a way to satisfy constraints and to take low values of objective value globally. The following experiments were conducted to evaluate the performance of the algorithms.
+	 \begin{itemize}
+	 	\item Experiment Environment
+	 	\begin{itemize}
+	 		\item Number of Experiments : 50 times
+	 		\item Experiement Time of MIP and GAN : 60 seconds
+	 		\item Solver of MIP : Cplex
+	 		\item Deep Learning Library : Pytorch
+	 		\item The range of assets selected : 60 $\sim$ 70  
+	 	\end{itemize}
+ 	
+ 		\item Experiment Results :
+	 \end{itemize}
+	 \begin{figure}[h]
+	 \begin{center}
+	 \begin{tikzpicture}[scale=0.93]
+	 \begin{axis}[
+	 ybar,
+	 enlargelimits=0.15,
+	 legend style={at={(0.5,-0.20)},
+	 	anchor=north,legend columns=-1},
+	 ylabel={\# of solutions},
+	 symbolic x coords={MIP,GAN, Random},
+	 xtick=data,
+	 nodes near coords,
+	 nodes near coords align={vertical},
+	 	title={\large\textbf{[Feasibility of Algorithms]}}
+	 ]
+	 \addplot coordinates {(MIP,0) (GAN,35) (Random,17)};
+	 \addplot coordinates {(MIP,50) (GAN,15) (Random,33)};
+	 \legend{\# of Feasilbe$\quad$, \# of Infeasible}
+	 \end{axis}
+	 \end{tikzpicture} 
+	 	\quad
+	 \begin{tikzpicture}[scale=1.]
+	 \begin{axis}
+	 [
+	 ytick={1,2},
+	 yticklabels={\footnotesize GAN, \footnotesize Random},
+	 xlabel={\small Objectiv Value  },
+	 	title={\small\textbf{[Objective Values of Algorithms]}}
+	 ]
+	 \addplot+[
+	 boxplot prepared={
+	 	median=30.83,
+	 	upper quartile=38.47,
+	 	lower quartile=27.77,
+	 	upper whisker=48.08,
+	 	lower whisker=25.02
+	 },
+	 ] coordinates {};
+	 \addplot+[
+	 boxplot prepared={
+	 	median=33.65625795734167,
+	 	upper quartile=40.18,
+	 	lower quartile=27.90,
+	 	upper whisker=43.58,
+	 	lower whisker=25.25
+	 },
+	 ] coordinates {};
+	 
+	 \end{axis}
+	 \end{tikzpicture}
+	 
+	 			\caption{Result of Algorithms} \label{fig:feasi}
+	 	 \end{center}
+ 	 	\end{figure}
+	  
+
+\begin{figure}[h] 
+	\begin{center}
+		\includegraphics[width=0.6\textwidth]{step1}
+		\caption{A Flowchart of Hybrid Approach} \label{fig:step1}
+	\end{center}
+\end{figure}
+
+
 	
 
 

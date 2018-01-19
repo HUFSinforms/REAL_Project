@@ -6,33 +6,25 @@ import CPLEX_NEW as cn
 
 
 class informs:
-    def __init__(self,omega_multi,alpha_multi,w_pre,O_scale):
-        f0 = open('pic/dic_sector.txt', 'rb')
-        f1 = open('pic/dic_bench.txt', 'rb')
-        f2 = open('pic/risk_sedol.txt', 'rb')
-        f3 = open('pic/dic_MCAP.txt', 'rb')
-        f4 = open('pic/dic_beta.txt', 'rb')
-        f5 = open('pic/alpha.txt', 'rb')
-        f6 = open('pic/qmat.txt', 'rb')
-        f7 = open('pic/Q_con.txt', 'rb')
-        f8 = open('pic/risk_mat.txt', 'rb')
+    def __init__(self,omega_multi,alpha_multi,w_pre,O_scale,dic_sector,dic_bench,risk_sedol,dic_MCAP,dic_beta,alpha,risk_mat):
 
-        self.dic_sector = pickle.load(f0)
-        self.dic_bench = pickle.load(f1)
-        self.risk_sedol = pickle.load(f2)
-        self.dic_MCAP = pickle.load(f3)
-        self.dic_beta = pickle.load(f4)
-        self.alpha = pickle.load(f5)
-        self.qmat = pickle.load(f6)
-        self.risk_mat = pickle.load(f8)
+
+        self.dic_sector = dic_sector
+        self.dic_bench = dic_bench
+        self.risk_sedol = risk_sedol
+        self.dic_MCAP = dic_MCAP
+        self.dic_beta = dic_beta
+        self.alpha = alpha
+        self.risk_mat = risk_mat
         self.omegamulti = omega_multi
         self.conlist = [0,1,2,3,4,5]
+        self.w_pre = w_pre
         q_con1 = []
         q_con2 = []
         q_val = []
         
         for i in range(len(self.alpha)):
-            self.alpha[i] = self.alpha[i]/10000*alpha_multi
+            self.alpha[i] = self.alpha[i]*alpha_multi
 
         for i in range(len((self.risk_mat[0]))):
             for j in range(len(self.risk_mat[0])):
@@ -76,15 +68,20 @@ class informs:
         sedol_var_list.append("assum")
         
         sedol_var_list.append("O")
+        
+        for i in self.w_pre.keys():
+            sedol_var_list.append("dx" + str(i))
 
         for i in range(len(risk_mat)):
             qmat_1 = []
             qmat_1.append(sedol_var_list)
             new_risk_mat = []
             for j in risk_mat[i]:
-                new_risk_mat.append(j*self.omegamulti)
+                new_risk_mat.append(2*j*self.omegamulti)
             new_risk_mat.append(0)
             new_risk_mat.append(0)
+            for j in self.w_pre.keys():
+                new_risk_mat.append(0)
             qmat_1.append(new_risk_mat)
             self.qmat.append(qmat_1)
 
@@ -96,6 +93,21 @@ class informs:
                 new_risk_mat.append(0)
             new_risk_mat.append(0)
             new_risk_mat.append(0)
+            for j in self.w_pre.keys():
+                new_risk_mat.append(0)
+            qmat_1.append(new_risk_mat)
+            self.qmat.append(qmat_1)
+            
+        for i in range(len(risk_mat)):
+            qmat_1 = []
+            qmat_1.append(sedol_var_list)
+            new_risk_mat = []
+            for j in risk_mat[i]:
+                new_risk_mat.append(0)
+            new_risk_mat.append(0)
+            new_risk_mat.append(0)
+            for j in self.w_pre.keys():
+                new_risk_mat.append(0)
             qmat_1.append(new_risk_mat)
             self.qmat.append(qmat_1)
             
@@ -134,6 +146,10 @@ class informs:
                                                                                       
         
         list_result = self.cplexs.solves()
+        if list_result == 1234:
+            
+            return 1234
+            
         self.cplexs.set_upsum(big_w_dic=w_up_dic, w_upsums=0)
 
         w_dic = list_result[0]
@@ -145,9 +161,10 @@ class informs:
         mat_2 = np.zeros((len(self.risk_sedol), 1))
 
         for i in w_dic.keys():
+            
             sum_min += min(w_dic[i], self.dic_bench[i])
 
-        print("sum_min : " + str(1 - sum_min))
+
         mins_list.append(1 - sum_min)
 
         active_share = 1 - sum_min
@@ -170,15 +187,23 @@ class informs:
         a = np.dot(mat_1, self.risk_mat)
         b = np.dot(a, mat_2)
         c = np.dot(mat_1,a)
+        acnum = 0
         
         print("TE")
-        print(c)
+        
         print(b)
         mins_list2.append(b)
 
         TE = b
 
         w_upsum = 0
+        
+        if list_result[4] != 1:
+            print("infeasible")
+            return 0
+        
+        #if list_result[4] == 1:
+           # print("피지블")
 
         for i in w_dic.keys():
             if w_dic[i] > self.dic_bench[i]:
@@ -193,22 +218,36 @@ class informs:
         else:
             end = True
 
+            
+            
+        if active_share < 0.6:
+            acnum += 1
+            
         dist = 1
         w_upsum2 = 1
         Feasible_check = 0
         final_result_dic = {}
 
         while (end):
-            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!bysta")
+            #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!bysta")
             if dist < end_cond:
                 if active_share < 0.6 or TE < 0.0025*self.omegamulti:
                     if Feasible_check == 0:
-                        print("No Solution")
+                        #print("No Solution")
+                        #print("TE, AS 만족못함")
+                        #print("ac 만족못한 경우")
+                        #print(acnum)
                         return 0
 
                     else:
+                        #print("ac 만족못한 경우")
+                        #print(acnum)
+                        print("Feasible")
                         return final_result_dic
                 else:
+                   # print("ac 만족못한 경우")
+                   # print(acnum)
+                    print("Feasible")
                     return final_result_dic
                 break
 
@@ -216,6 +255,12 @@ class informs:
             self.cplexs.set_upsum(big_w_dic=w_up_dic, w_upsums=w_upsum_in)
             
             list_result2 = self.cplexs.solves()
+             
+                
+           # if list_result2 == 1234:
+            
+               # return 1234
+               # break
 
             w_dic = list_result2[0]
             d_dic = list_result2[1]
@@ -240,11 +285,18 @@ class informs:
             b = np.dot(a, mat_2)
             TE = b
 
-            print(TE)
-            print(active_share)
+            print("TE : ",TE)
+            print("AS : ",active_share)
+            if active_share < 0.6:
+                acnum += 1
             if active_share < 0.6 or TE < 0.0025*self.omegamulti:
                 dist = w_upsum2 - w_upsum_in
                 w_upsum = w_upsum_in
+            elif list_result2[4] != 1:
+                dist = w_upsum2 - w_upsum_in
+                w_upsum = w_upsum_in
+                #print("사실만족안한거!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            
             else:
                 dist = w_upsum_in - w_upsum
                 w_upsum2 = w_upsum_in

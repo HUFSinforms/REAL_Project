@@ -1,0 +1,36 @@
+\documentclass[11pt]{article}
+\usepackage{latexsym}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+
+
+\parindent0pt
+\parskip\bigskipamount
+
+
+\begin{document}
+	
+\centering\large \textbf{[ Robust Optimization ]}
+	
+	\begin{align*}
+	\text{(Original)} \quad \min  \quad & d^T\Omega d  - \lambda d^T \alpha 
+	\end{align*}
+	\\
+	Let set $U := \{ \tilde \alpha  \mid \tilde \alpha_i = \hat{\alpha_i} + \bar{\alpha_i}\gamma_i , \quad -1 \leq \gamma_i\leq 1 , \quad \sum_{i} |\gamma_i| = \Gamma \}$.
+	\\
+	\begin{align*}
+	\text{(robustness)} \quad \min \quad & d^T\Omega d  - \lambda \min_{\tilde \alpha \in U } d^T \tilde{\alpha} \\
+	\text{$\Rightarrow$} \quad \min_{\tilde \alpha \in U } d^T \tilde{\alpha} &= \min \sum_{i} d^T (\hat{\alpha_i} + \bar{\alpha_i}\gamma_i ) \\
+	\text{(Dual) $\Rightarrow$} \quad \max \quad & \pi + \sum_{i} \theta_i  \\
+	\text{s.t} \quad & \pi + \theta_i \leq   \tilde{\alpha} d_i, \quad \forall i \in N 
+	\end{align*}
+	
+	\begin{align*}
+	\text{(ALL)} \quad \min \quad & d^T\Omega d  +  \lambda (\pi + \sum_{i} \theta_i  ) \\
+	\text{s.t } \quad & (1) - (11)\\
+	&\pi + \theta_i \leq   \tilde{\alpha} d_i, \quad \forall i \in N 
+	\end{align*}
+	
+\end{document}
