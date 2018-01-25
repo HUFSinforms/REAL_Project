@@ -20,17 +20,44 @@
 	\\
 	Let set $U := \{ \tilde \alpha  \mid \tilde \alpha_i = \hat{\alpha_i} + \bar{\alpha_i}\gamma_i , \quad -1 \leq \gamma_i\leq 1 , \quad \sum_{i} |\gamma_i| = \Gamma \}$.
 	\\
+	
+	
 	\begin{align*}
 	\text{(robustness)} \quad \min \quad & d^T\Omega d  - \lambda \min_{\tilde \alpha \in U } d^T \tilde{\alpha} \\
 	\text{$\Rightarrow$} \quad \min_{\tilde \alpha \in U } d^T \tilde{\alpha} &= \min \sum_{i} d^T (\hat{\alpha_i} + \bar{\alpha_i}\gamma_i ) \\
-	\text{(Dual) $\Rightarrow$} \quad \max \quad & \pi + \sum_{i} \theta_i  \\
-	\text{s.t} \quad & \pi + \theta_i \leq   \tilde{\alpha} d_i, \quad \forall i \in N 
+	\text{(Dual) $\Rightarrow$} \quad \max \quad & \Gamma \pi + \sum_{i} \theta_i  \\
+	\text{s.t} \quad & \pi + \theta_i \leq   \bar{\alpha} d_i, \quad \forall i \in N \\
+	& \pi \geq 0, \quad \\
+	&  \theta_i \geq 0, \quad \forall i \in N 
 	\end{align*}
+	
 	
 	\begin{align*}
-	\text{(ALL)} \quad \min \quad & d^T\Omega d  +  \lambda (\pi + \sum_{i} \theta_i  ) \\
+	\text{(ALL)} \quad \min \quad & d^T\Omega d  -  \lambda (\Gamma \pi + \sum_{i} \theta_i  ) \\
 	\text{s.t } \quad & (1) - (11)\\
-	&\pi + \theta_i \leq   \tilde{\alpha} d_i, \quad \forall i \in N 
+	&\pi + \theta_i \leq   \tilde{\alpha} d_i, \quad \forall i \in N \\
+	&\pi \geq 0 \\
+	& \theta_i \geq 0, \quad \forall i \in N 
 	\end{align*}
 	
+	We may a simplified formulation because the worst-case only occurs when $\tilde{d_i} =\hat{d_i} - \bar{\alpha_i}, \forall i \in N (\text{i.e} \gamma_i = -1)$. \\[5mm]
+    Let set $U := \{ \tilde \alpha  \mid \tilde \alpha_i = \hat{\alpha_i} + \bar{\alpha_i}\gamma_i , \quad 0 \leq \gamma_i\leq 1 , \quad \sum_{i} \gamma_i = \Gamma \}$.\\[5mm]
+	For a given $\alpha$,
+	\begin{align*}
+	\text{(robustness)} 
+	\text{} \quad \min_{\tilde \alpha \in U } d^T \tilde{\alpha} &= \min \sum_{i} d^T (\hat{\alpha_i} - \bar{\alpha_i}\gamma_i ) \\
+	& \sum_{i} \gamma_i \leq \bar{\alpha_i} d_i , \quad \forall i \in N\\
+	& \quad 0 \leq \gamma_i\leq 1 , \quad \forall i \in N\\
+	\text{(Dual) $\Rightarrow$} \quad \max\quad & \Gamma  \pi + \sum_{i} \theta_i  \\
+	\text{s.t} \quad & \pi + \theta_i \leq   \bar{\alpha} d_i, \quad \forall i \in N \\
+	& \pi \geq 0 \quad \\
+	&  \theta_i \geq 0, \quad \forall i \in N 
+	\end{align*}
+	\begin{align*}
+	\text{(ALL)} \quad \min \quad & d^T\Omega d  -  \lambda (\Gamma \pi + \sum_{i} \theta_i  ) \\
+	\text{s.t } \quad & (1) - (11)\\
+	&\pi + \theta_i \leq   \bar{\alpha} d_i, \quad \forall i \in N \\
+	&\pi \geq 0 \\
+	& \theta_i \geq 0, \quad \forall i \in N 
+	\end{align*}
 \end{document}
