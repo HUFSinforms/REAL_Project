@@ -29,7 +29,7 @@ class portfolio():
         
         
         
-        self.c.variables.add(names=["O"], obj=[O_scale*0.0001], lb=[-99999])
+        self.c.variables.add(names=["O"], obj=[O_scale], lb=[-99999])
         
         
         self.c.variables.add(names=["dx" + str(i) for i in w_pre.keys()], lb=[0 for j in w_pre.keys()],ub=[50000 for j in w_pre.keys()])
@@ -141,7 +141,7 @@ class portfolio():
 
 
     def set_upsum(self,w_upsums, big_w_dic):
-        print(self.w_upchek)
+        #print(self.w_upchek," upchek num")
         if self.w_upchek > 0:
             self.c.linear_constraints.delete("sum")
             self.c.linear_constraints.delete("w_big")
@@ -245,7 +245,7 @@ class portfolio():
         self.c.set_error_stream(None)
         self.c.set_warning_stream(None)
         self.c.set_results_stream(None)
-        #self.c.write('TO.lp')
+        #self.c.write('TO_1.lp')
         
 
         self.c.solve()
@@ -286,8 +286,8 @@ class portfolio():
         abcd.append(self.c.solution.get_objective_value())
         abcd.append(ef)
         abcd.append(self.c.solution.get_status())
-        #print("O"  + " : " + str(self.c.solution.get_values("O")))
-        #print(self.c.solution.get_objective_value())
+        print("O"  + " : " + str(self.c.solution.get_values("O")))
+        print(self.c.solution.get_objective_value())
 
         #for j in self.w_pre.keys():
             #print("dx"+ str(j)  + " : " + str(0.0001*self.c.solution.get_values("dx"+ str(j))))

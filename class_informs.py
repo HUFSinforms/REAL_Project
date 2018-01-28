@@ -4,6 +4,12 @@ import pickle
 import CPLEX_NEW as cn
 
 
+            
+
+            
+
+
+
 
 class informs:
     def __init__(self,omega_multi,alpha_multi,w_pre,O_scale,dic_sector,dic_bench,risk_sedol,dic_MCAP,dic_beta,alpha,risk_mat):
@@ -47,10 +53,10 @@ class informs:
         self.cplexs = cn.portfolio(sector=self.dic_sector, bench=self.dic_bench, asset=self.risk_sedol, MCAPQ=self.dic_MCAP, beta=self.dic_beta,alpha=self.alpha,w_pre=w_pre,O_scale=O_scale)
 
 
-        
+    
 
         
-        
+     
         
         
         
@@ -89,7 +95,7 @@ class informs:
             qmat_1 = []
             qmat_1.append(sedol_var_list)
             new_risk_mat = []
-            for j in risk_mat[i]:
+            for j in range(len(risk_mat[0])):
                 new_risk_mat.append(0)
             new_risk_mat.append(0)
             new_risk_mat.append(0)
@@ -98,11 +104,11 @@ class informs:
             qmat_1.append(new_risk_mat)
             self.qmat.append(qmat_1)
             
-        for i in range(len(risk_mat)):
+        for i in range(len(self.w_pre.keys())):
             qmat_1 = []
             qmat_1.append(sedol_var_list)
             new_risk_mat = []
-            for j in risk_mat[i]:
+            for j in range(len(risk_mat[0])):
                 new_risk_mat.append(0)
             new_risk_mat.append(0)
             new_risk_mat.append(0)
@@ -143,14 +149,16 @@ class informs:
         for i in self.risk_sedol:
             w_up_dic.update({i: 0})
                    
-                                                                                      
+        self.cplexs.set_upsum(big_w_dic=w_up_dic, w_upsums=0)                                                                              
         
         list_result = self.cplexs.solves()
+        
+        
         if list_result == 1234:
             
             return 1234
             
-        self.cplexs.set_upsum(big_w_dic=w_up_dic, w_upsums=0)
+        
 
         w_dic = list_result[0]
         d_dic = list_result[1]
@@ -159,6 +167,7 @@ class informs:
         sum_min = 0
         mat_1 = np.empty(shape=[0, len(self.alpha)])
         mat_2 = np.zeros((len(self.risk_sedol), 1))
+        
 
         for i in w_dic.keys():
             
@@ -171,6 +180,9 @@ class informs:
 
         print("AC")
         print(active_share)
+        
+        
+        DP = 1.0/float(len(self.conlist))
 
         k = 0
 
@@ -199,24 +211,75 @@ class informs:
         w_upsum = 0
         
         if list_result[4] != 1:
+            
             print("infeasible")
-            return 0
+
+            non_fea = 0
+
+
+            # (6)
+            for i in self.dic_sector:
+                chek_sect = 0
+                for j in self.dic_sector[i]:
+                    chek_sect += w_dic[j]-self.dic_bench[j]
+                if abs(chek_sect) > 0.1:
+                    non_fea = 1
+                    print("st_6 infeasible and infeasible sector is : ",i)
+                    return "sector"
+                    
+
+            # (7)
+            for i in self.dic_MCAP:
+                chek_mcap = 0
+                for j in self.dic_MCAP[i]:
+                    chek_mcap += w_dic[j]-self.dic_bench[j]
+                if abs(chek_mcap) > 0.1:
+                    non_fea = 1
+                    print("st_7 infeasible and infeasible mcapq is : ",i)
+                    return "MCAPQ"
+            
+
+            # (8)
+            chek_beta = 0
+            for i in self.risk_sedol:
+                chek_beta += (w_dic[i]-self.dic_bench[i])*self.dic_beta[i]
+        
+            if abs(chek_beta) > 0.1:
+                non_fea = 1
+                print("st_8 infeasible")
+                return 0
+            
+            
+            if non_fea == 0:
+                return 0 
         
         #if list_result[4] == 1:
            # print("피지블")
+            
+        wupchek = 0
+        wsum = 0
+        
 
         for i in w_dic.keys():
-            if w_dic[i] > self.dic_bench[i]:
+            wsum += w_dic[i]
+            #if w_dic[i] > self.dic_bench[i]:
+            if w_dic[i] > DP:
                 w_up_dic.update({i: 1})
                 w_upsum += w_dic[i]
+                wupchek += 1
 
         end = False
 
         if active_share >= 0.6 and TE >= 0.0025*self.omegamulti:
+            
             return list_result
             end = False
         else:
             end = True
+            
+        print(w_upsum," wupsum")
+        print(wsum, " wsum!")
+        print(wupchek," wupdic_len")
 
             
             
@@ -226,36 +289,33 @@ class informs:
         dist = 1
         w_upsum2 = 1
         Feasible_check = 0
-        final_result_dic = {}
+        final_result_dic = []
 
         while (end):
             #print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!bysta")
             if dist < end_cond:
-                if active_share < 0.6 or TE < 0.0025*self.omegamulti:
-                    if Feasible_check == 0:
-                        #print("No Solution")
-                        #print("TE, AS 만족못함")
-                        #print("ac 만족못한 경우")
-                        #print(acnum)
-                        return 0
+      
+                if len(final_result_dic) == 0:
+                    print("infeasible!")
+                    return 0
 
-                    else:
-                        #print("ac 만족못한 경우")
-                        #print(acnum)
-                        print("Feasible")
-                        return final_result_dic
                 else:
-                   # print("ac 만족못한 경우")
-                   # print(acnum)
-                    print("Feasible")
+                    #print("ac 만족못한 경우")
+                    #print(acnum)
+                    print("BS Feasible!!!")
                     return final_result_dic
+
                 break
 
             w_upsum_in = (w_upsum + w_upsum2) * 0.5
             self.cplexs.set_upsum(big_w_dic=w_up_dic, w_upsums=w_upsum_in)
             
-            list_result2 = self.cplexs.solves()
-             
+            try:
+                list_result2 = self.cplexs.solves()
+            except:
+                print("BS cplex no Solution")
+                return 0
+                break
                 
            # if list_result2 == 1234:
             
@@ -287,12 +347,58 @@ class informs:
 
             print("TE : ",TE)
             print("AS : ",active_share)
+
+            
             if active_share < 0.6:
                 acnum += 1
             if active_share < 0.6 or TE < 0.0025*self.omegamulti:
                 dist = w_upsum2 - w_upsum_in
                 w_upsum = w_upsum_in
-            elif list_result2[4] != 1:
+            elif list_result2[4] != 1 and len(final_result_dic) == 0:
+                print("Bs infeasible")
+                non_fea = 0
+
+                
+
+                # (6)
+                for i in self.dic_sector:
+                    chek_sect = 0
+                    for j in self.dic_sector[i]:
+                        chek_sect += w_dic[j]-self.dic_bench[j]
+                    if abs(chek_sect) > 0.1:
+                        print("st_6 infeasible and infeasible sector is : ",i)
+                        non_fea = 1
+                        return "sector"
+                        
+
+                # (7)
+                for i in self.dic_MCAP:
+                    chek_mcap = 0
+                    for j in self.dic_MCAP[i]:
+                        chek_mcap += w_dic[j]-self.dic_bench[j]
+                    if abs(chek_mcap) > 0.1:
+                        print("st_7 infeasible and infeasible mcapq is : ",i)
+                        non_fea = 1
+                        return "MCAPQ"
+                        
+
+                # (8)
+                chek_beta = 0
+                for i in self.risk_sedol:
+                    chek_beta += (w_dic[i]-self.dic_bench[i])*self.dic_beta[i]
+
+                if abs(chek_beta) > 0.1:
+                    print("st_8 infeasible")
+                    non_fea = 1
+                    return 0
+                
+                if non_fea == 0:
+                    return 0
+                
+                
+                
+                break
+                
                 dist = w_upsum2 - w_upsum_in
                 w_upsum = w_upsum_in
                 #print("사실만족안한거!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
