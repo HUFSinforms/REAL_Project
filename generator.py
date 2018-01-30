@@ -5,15 +5,33 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 import numpy as np
-
-
-
-
-class Generator(nn.Module):
-    def __init__(self,  in_dim=10, hd_dim=50, out_dim=500):
-        super(Generator, self).__init__()
+#import ipyparallel as ipp
         
-        self.G_W1 = nn.Parameter(torch.from_numpy(xavier_init([in_dim, hd_dim])).float())
+def sample_Z(m, n):
+    return Variable(torch.Tensor(np.random.rand(m, n)))
+
+
+def xavier_init(size):
+    in_dim = size[0]
+    xavier_stddev = 1. / np.sqrt(in_dim / 2.)
+    return np.random.normal(size=size, scale=xavier_stddev)
+
+
+
+#@ipp.require(xavier_init)
+class Generator(nn.Module):
+    #@ipp.require(xavier_init)
+
+    def __init__(self,  in_dim=10, hd_dim=50, out_dim=500, xavier=None ):
+        super(Generator, self).__init__()
+        self.xavier=xavier
+        
+        #if xavier is None:
+           # self.xavier= xavier_init([in_dim,hd_dim])
+        #else:
+            #self.xavier= xavier
+            
+        self.G_W1 = nn.Parameter(torch.from_numpy(self.xavier).float())
         self.G_b1 = nn.Parameter(torch.from_numpy(np.zeros(shape=[hd_dim])).float())
         #print('w1',self.G_W1)
 
@@ -26,6 +44,8 @@ class Generator(nn.Module):
         
         self.G_W2 = nn.Parameter(torch.from_numpy(xavier_init([hd_dim, out_dim])).float())
         self.G_b2 = nn.Parameter(torch.from_numpy(np.zeros(shape=[out_dim])).float())
+        
+
 
     def forward(self, x=None):
 

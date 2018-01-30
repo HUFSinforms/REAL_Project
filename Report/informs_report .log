@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.11.9)  30 JAN 2018 12:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.11.9)  30 JAN 2018 19:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**informs_report.tex
-(./informs_report.tex
+**"informs_report .tex"
+(./informs_report .tex
 LaTeX2e <2017-04-15>
 Babel <3.10> and hyphenation patterns for 84 language(s) loaded.
 (/usr/local/texlive/2017/texmf-dist/tex/latex/base/article.cls
@@ -685,8 +685,8 @@ ts.statistics.code.tex)
 \c@lem=\count141
 \c@pf=\count142
 \c@remark=\count143
- (./informs_report.aux)
-\openout1 = `informs_report.aux'.
+ (./informs_report .aux)
+\openout1 = `"informs_report .aux"'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
 LaTeX Font Info:    ... okay on input line 38.
@@ -848,44 +848,49 @@ Missing character: There is no ™ in font cmr10!
  [3] [4]
 
 Package natbib Warning: Citation `sahinidis:baron:17.8.9' on page 5 undefined o
-n input line 159.
+n input line 160.
 
 
-Package natbib Warning: Citation `coin' on page 5 undefined on input line 159.
+Package natbib Warning: Citation `coin' on page 5 undefined on input line 160.
 
 
 Package natbib Warning: Citation `BONAMI2008186' on page 5 undefined on input l
-ine 159.
+ine 160.
 
-[5] [6] <cor.pdf, id=38, 662.475pt x 215.80624pt>
+[5] [6]
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 184.
+
+<cor.pdf, id=39, 662.475pt x 215.80624pt>
 File: cor.pdf Graphic file (type pdf)
  <use cor.pdf>
-Package pdftex.def Info: cor.pdf used on input line 185.
-(pdftex.def)             Requested size: 258.36668pt x 84.1641pt.
+Package pdftex.def Info: cor.pdf used on input line 186.
+(pdftex.def)             Requested size: 375.80544pt x 122.42139pt.
  [7 <./cor.pdf>]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 211.
+               Default added (so using `tbp') on input line 212.
 
 
-Overfull \hbox (1.38637pt too wide) in paragraph at lines 216--228
+Overfull \hbox (1.38637pt too wide) in paragraph at lines 217--229
  [][] 
  []
 
 [8]
 
 Package natbib Warning: Citation `goodfellow2014generative' on page 9 undefined
- on input line 249.
+ on input line 250.
 
-<GAN_basic.pdf, id=71, 635.37375pt x 157.58875pt>
+<GAN_basic.pdf, id=72, 635.37375pt x 157.58875pt>
 File: GAN_basic.pdf Graphic file (type pdf)
  <use GAN_basic.pdf>
-Package pdftex.def Info: GAN_basic.pdf used on input line 252.
+Package pdftex.def Info: GAN_basic.pdf used on input line 253.
 (pdftex.def)             Requested size: 281.85587pt x 69.90915pt.
 
 
 Package natbib Warning: Citation `goodfellow2014generative' on page 9 undefined
- on input line 256.
+ on input line 257.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
@@ -893,26 +898,26 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [9]
 
 Package natbib Warning: Citation `Anonymous:F_g9Hkad' on page 10 undefined on i
-nput line 260.
+nput line 261.
 
 [10 <./GAN_basic.pdf>]
 
 Package natbib Warning: Citation `bottou2010large' on page 11 undefined on inpu
-t line 289.
+t line 290.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 291.
+               Default added (so using `tbp') on input line 292.
 
-<GAN_port.pdf, id=82, 637.38126pt x 97.36375pt>
+<GAN_port.pdf, id=83, 637.38126pt x 97.36375pt>
 File: GAN_port.pdf Graphic file (type pdf)
  <use GAN_port.pdf>
-Package pdftex.def Info: GAN_port.pdf used on input line 293.
+Package pdftex.def Info: GAN_port.pdf used on input line 294.
 (pdftex.def)             Requested size: 281.85587pt x 43.05411pt.
- [11 <./GAN_port.pdf>] <bisection.pdf, id=90, 720.6925pt x 288.07625pt>
+ [11 <./GAN_port.pdf>] <bisection.pdf, id=91, 720.6925pt x 288.07625pt>
 File: bisection.pdf Graphic file (type pdf)
  <use bisection.pdf>
-Package pdftex.def Info: bisection.pdf used on input line 333.
+Package pdftex.def Info: bisection.pdf used on input line 334.
 (pdftex.def)             Requested size: 352.31625pt x 140.8289pt.
 
 
@@ -921,7 +926,7 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 [12]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 390.
+               Default added (so using `tbp') on input line 391.
 
 Missing character: There is no / in font nullfont!
 Missing character: There is no p in font nullfont!
@@ -996,75 +1001,75 @@ Missing character: There is no , in font nullfont!
 [13 <./bisection.pdf>]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 525.
+               Default added (so using `tbp') on input line 526.
 
-<flowchart.pdf, id=127, 447.6725pt x 530.98375pt>
+<flowchart.pdf, id=128, 447.6725pt x 530.98375pt>
 File: flowchart.pdf Graphic file (type pdf)
  <use flowchart.pdf>
-Package pdftex.def Info: flowchart.pdf used on input line 527.
+Package pdftex.def Info: flowchart.pdf used on input line 528.
 (pdftex.def)             Requested size: 211.38832pt x 250.7291pt.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 532.
+               Default added (so using `tbp') on input line 533.
 
-<step1.pdf, id=128, 493.845pt x 376.40625pt>
+<step1.pdf, id=129, 493.845pt x 376.40625pt>
 File: step1.pdf Graphic file (type pdf)
  <use step1.pdf>
-Package pdftex.def Info: step1.pdf used on input line 534.
+Package pdftex.def Info: step1.pdf used on input line 535.
 (pdftex.def)             Requested size: 281.85587pt x 214.82373pt.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 540.
+               Default added (so using `tbp') on input line 541.
 
-<step3.pdf, id=129, 607.26875pt x 509.905pt>
+<step3.pdf, id=130, 607.26875pt x 509.905pt>
 File: step3.pdf Graphic file (type pdf)
  <use step3.pdf>
-Package pdftex.def Info: step3.pdf used on input line 542.
+Package pdftex.def Info: step3.pdf used on input line 543.
 (pdftex.def)             Requested size: 305.33789pt x 256.38348pt.
  [14] [15 <./flowchart.pdf> <./step1.pdf>] [16 <./step3.pdf>]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 629.
+               Default added (so using `tbp') on input line 630.
 
 [17]
 
 Package pgfplots Warning: scatter/classes: can't find class for '27'!? Please m
 ake sure you have specified 'scatter src=explicit symbolic'. Ignoring class '27
-' (this message will not come again). on input line 748.
+' (this message will not come again). on input line 749.
 
  [warning /pgfplots/warning/scatter classes no such class]
 
 Package pgfplots Warning: scatter/classes: can't find class for '25'!? Please m
 ake sure you have specified 'scatter src=explicit symbolic'. Ignoring class '25
-' (this message will not come again). on input line 748.
+' (this message will not come again). on input line 749.
 
  [warning /pgfplots/warning/scatter classes no such class]
 [18] [19]
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 837.
+               Default added (so using `tbp') on input line 838.
+
+
+LaTeX Warning: No positions in optional float specifier.
+               Default added (so using `tbp') on input line 917.
 
 <lambda.pdf, id=161, 433.62pt x 289.08pt>
 File: lambda.pdf Graphic file (type pdf)
  <use lambda.pdf>
-Package pdftex.def Info: lambda.pdf used on input line 918.
+Package pdftex.def Info: lambda.pdf used on input line 919.
 (pdftex.def)             Requested size: 258.36668pt x 172.25395pt.
- [20]
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[21] [22 <./lambda.pdf>]
+ [20] [21] [22 <./lambda.pdf>]
 
 Package natbib Warning: Citation `bertsimas2004price' on page 23 undefined on i
-nput line 960.
+nput line 961.
 
 
 LaTeX Warning: No positions in optional float specifier.
-               Default added (so using `tbp') on input line 975.
+               Default added (so using `tbp') on input line 977.
 
-(./informs_report.bbl
+[23] (./informs_report .bbl
 
 Package natbib Warning: Empty `thebibliography' environment on input line 3.
 
@@ -1072,39 +1077,39 @@ Package natbib Warning: Empty `thebibliography' environment on input line 3.
 
 Package natbib Warning: There were undefined citations.
 
-[23] [24] (./informs_report.aux) ) 
+[24] (./informs_report .aux) ) 
 Here is how much of TeX's memory you used:
  24275 strings out of 492995
- 617098 string characters out of 6132704
+ 617115 string characters out of 6132704
  797902 words of memory out of 5000000
  27396 multiletter control sequences out of 15000+600000
  16607 words of font info for 69 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 62i,19n,107p,1723b,2331s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2017/texmf-dist/fonts/enc
-/dvips/cm-super/cm-super-ts1.enc}</usr/local/texlive/2017/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmex10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publi
-c/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmi8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/am
-sfonts/cm/cmr10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsf
-onts/cm/cmr12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmr17.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts
-/cm/cmr6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm
-/cmr7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cm
-r8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.
-pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.p
-fb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
-></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><
-/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></
-usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></u
-sr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
-></usr/local/texlive/2017/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on informs_report.pdf (24 pages, 615802 bytes).
+ 62i,19n,107p,1785b,2331s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvi
+ps/cm-super/cm-super-ts1.enc}</usr/local/texlive/2017/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publ
+ic/amsfonts/cm/cmbx9.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public
+/amsfonts/cm/cmex10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/
+amsfonts/cm/cmmi10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/a
+msfonts/cm/cmmi12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/am
+sfonts/cm/cmmi6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmmi8.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfon
+ts/cm/cmr10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmr12.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmr17.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/
+cmr6.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.p
+fb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb>
+</usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><
+/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></u
+sr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr
+/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/
+local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/l
+ocal/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></u
+sr/local/texlive/2017/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
+Output written on "informs_report .pdf" (24 pages, 616724 bytes).
 PDF statistics:
  281 PDF objects out of 1000 (max. 8388607)
  187 compressed objects within 2 object streams

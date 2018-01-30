@@ -5,12 +5,61 @@
 \DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
 
-
 \parindent0pt
 \parskip\bigskipamount
 
+\usepackage{colortbl}
+\usepackage{pgfplots}
+\usepackage{pgfplotstable}
+
+
 
 \begin{document}
+		\begin{figure}
+	\begin{tikzpicture}
+	\begin{axis}[
+		width=0.5\linewidth,
+		height=5cm,
+		axis lines=left,
+		grid=both,
+		legend style={draw=none, font=\scriptsize},
+		legend cell align=left,
+		legend style={at={(0.5,-0.25)}, anchor=north},
+		label style={font=\scriptsize},
+		ticklabel style={font=\tiny},
+		xlabel style={at={(0.5, 0.03)}},
+		ylabel style={at={(0.08, 0.5)}},
+		ymin=0,
+		xmin=0,
+		ymax=100,
+		xmax=7,
+		xtick={0,10},
+		ytick={0,80},
+		xlabel=Users ($n$),
+		ylabel=Running Time (seconds),
+		legend entries={{$m=8$, $p=1$ (Centralized)}},
+		]
+		\addplot[color=blue, thick, mark options={scale=0.5}] coordinates {
+		(0, 22.87835501)
+		(1, 70.22758985)
+		(2, 27.29357997)
+		(3, 23.41346661)
+		(4, 24.14684022)
+		(5, 25.18932616)
+		(6, 24.53572075) };
+		\addplot[scatter,color=red, only marks,mark=*, mark options={scale=0.5}] coordinates {
+		(0, 22.82923962950044)
+		(2, 27.246690713625878)
+		(3, 23.363384835018515)
+		(4, 24.096623164811717)
+		(5, 25.14073766356739)
+		(6, 24.486286272271638)};
+	%	\addplot[color=black!40!green, mark=diamond*, thick, mark options={scale=0.5}, dashed] coordinates {
+		%	(25, 1) (50, 1) (75, 10) (100, 35) (125, 140) };
+	\end{axis}
+\end{tikzpicture}
+		\caption{\scriptsize Performance comparison of the algorithms ($m=30$)} \label{fig:label9}	
+	\end{figure}
 	
 \centering\large \textbf{[ Robust Optimization ]}
 	
